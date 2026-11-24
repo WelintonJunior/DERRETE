@@ -2,7 +2,7 @@ name: Deploy DERRETÊ
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 permissions:
   contents: read
@@ -18,29 +18,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Baixar código
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Configurar Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: Instalar dependências
-        run: npm ci
+      - run: npm ci
+      - run: npm run build
 
-      - name: Gerar build
-        run: npm run build
+      - uses: actions/configure-pages@v5
 
-      - name: Configurar Pages
-        uses: actions/configure-pages@v5
-
-      - name: Fazer upload do build
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
-      - name: Publicar
+      - name: Publicar no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
